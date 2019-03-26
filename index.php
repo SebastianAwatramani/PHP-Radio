@@ -1,37 +1,36 @@
 <?php
 
-
-function autoLoad($className)
-{
-
-    include "classes/" . $className . ".class.php";
-}
-
-spl_autoload_register("autoload");
-
+include ("includes/autoload.php");
 
 $dashboard = new Dashboard();
-$stationDisplay = new Idisplay();
-$stationDisplay->setOutput("88.5");
-
-echo nl2br($stationDisplay->getOutput());
-
-$stations = array(
-    "89.5",
-    "93.3",
-    "95.7",
-    "102.1",
-    "106.7"
-);
-
-for($i = 0; $i < 5; $i++)
-{
-    $command = new SwitchToFavoriteStationCommand($stationDisplay, $stations[$i]);
-    $dashboard->setCommand($i, $command);
-}
+$display = new IDisplay();
+$client = new Client($dashboard, $display);
 
 for ($i = 0; $i < 5; $i++) {
-    $dashboard->buttonWasPressed($i);
-    echo nl2br($stationDisplay->getOutput());
+    $command = new SwitchToFavoriteStationCommand($client->display(), $client->getStations()[$i]);
+    $client->dashboard()->setCommand($i, $command);
 }
 
+$button = $_GET['buttonIndex'] || 0;
+
+$client->dashboard()->buttonWasPressed($button);
+
+
+?>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+<p id="currentStation"><?php echo $client->display()->getOutput(); ?></p>
+
+
+</body>
+</html>
