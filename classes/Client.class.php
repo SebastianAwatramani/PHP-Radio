@@ -1,41 +1,88 @@
 <?php
+
+
+/**
+ * Class client
+ *
+ */
 class client
 {
 
-private $dashboard;
-private $display;
-private $stations = array();
+    /**
+     * @var Dashboard
+     * Holds a reference to our invoker
+     */
+    private $dashboard;
+    /**
+     * @var Display
+     * Holds a reference to our screen output
+     */
+    private $display;
+    /**
+     * @var array
+     * These are the stations one can switch to
+     */
+    private $stations = array();
 
-public function __construct(Dashboard $dashboard, IDisplay $display)
-{
+    /**
+     * client constructor.
+     * @param Dashboard $dashboard
+     * @param Display $display
+     * @param array $stations
+     */
+    public function __construct(Dashboard $dashboard, Display $display, array $stations)
+    {
+        $this->dashboard = $dashboard;
+        $this->display = $display;
+        $this->stations = $stations;
+    }
 
-$this->dashboard = $dashboard;
-$this->display = $display;
-$this->display->setOutput("88.5");
+    /**
+     * @return Dashboard
+     * Returns a reference to the dashboard for direct access to dashboard public functions
+     */
+    public function &dashboard(): Dashboard
+    {
+        return $this->dashboard;
+    }
 
-$this->stations = array(
-"89.5",
-"93.3",
-"95.7",
-"102.1",
-"106.7"
-);
+    /**
+     * @return Display
+     * Returns a reference to the display for direct access to display publich functions
+     */
+    public function &display(): Display
+    {
+        return $this->display;
+    }
 
-}
+    /**
+     * @return array
+     * Returns an array of stations
+     */
+    public function getStations(): array
+    {
+        return $this->stations;
+    }
 
-public function &dashboard(): Dashboard
-{
-return $this->dashboard;
-}
+    /**
+     * @param SimpleFactory $factory
+     * This method creates a set of radio switch commands, each tied to a different radiostation.  When the user selects a station, the
+     * correct command is executed
+     */
+    public function setRadioSwitchCommands(SimpleFactory $factory) : void
+    {
+        for ($i = 0; $i < count($this->stations); $i++) {
 
-public function &display(): IDisplay
-{
-return $this->display;
-}
+            $this->dashboard()->setCommand(
+                $i,
+                $factory->createRadioSwitchCommand(
+                    $this->display(),
+                    $this->stations[$i]
+                )
+            );
+        }
 
-public function getStations(): array
-{
-return $this->stations;
-}
+    }
+
 
 }
