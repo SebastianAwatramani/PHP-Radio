@@ -73,7 +73,7 @@ class client
     {
         for ($i = 0; $i < count($this->stations); $i++) {
 
-            $this->dashboard()->setCommand(
+            $this->dashboard()->setButtonCommand(
                 $i,
                 $factory->createRadioSwitchCommand(
                     $this->display(),

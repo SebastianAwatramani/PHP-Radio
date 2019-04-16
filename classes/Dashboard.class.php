@@ -26,7 +26,7 @@ class Dashboard
      * @param ICommand $command
      * This methods sets a command.  A "slot" is a button
      */
-    public function setCommand(int $slot, ICommand $command) : void
+    public function setButtonCommand(int $slot, ICommand $command) : void
     {
         $this->commands[$slot] = $command;
     }
